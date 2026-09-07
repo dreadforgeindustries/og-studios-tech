@@ -1,0 +1,2 @@
+export type Project={id:string;title:string;slug:string;category:string;description:string;technologies:string[];features:string[];images:string[];demo_url:string|null;github_url:string|null;featured:boolean;is_concept:boolean;created_at:string};
+export type Workshop={id:string;title:string;description:string;topics:string[];level:string;date:string|null;duration:string;seats:number;status:string;created_at:string};

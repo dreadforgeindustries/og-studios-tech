@@ -1,0 +1,2 @@
+import {NextRequest,NextResponse} from 'next/server'; import {requireUser} from '@/lib/admin-auth'; import {adminSupabase} from '@/lib/supabase';
+export async function PATCH(req:NextRequest){const {user}=await requireUser();if(!user)return NextResponse.json({error:'Unauthorized'},{status:401});const {id,status}=await req.json();const {error}=await adminSupabase().from('project_enquiries').update({status}).eq('id',id);if(error)return NextResponse.json({error:error.message},{status:400});return NextResponse.json({ok:true})}

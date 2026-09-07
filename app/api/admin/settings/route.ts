@@ -1,0 +1,2 @@
+import {NextRequest,NextResponse} from 'next/server'; import {requireUser} from '@/lib/admin-auth'; import {adminSupabase} from '@/lib/supabase';
+export async function POST(req:NextRequest){const {user}=await requireUser();if(!user)return NextResponse.json({error:'Unauthorized'},{status:401});const body=await req.json();for(const [key,value] of Object.entries(body)){const {error}=await adminSupabase().from('settings').upsert({key,value:String(value)},{onConflict:'key'});if(error)return NextResponse.json({error:error.message},{status:400})}return NextResponse.json({ok:true})}

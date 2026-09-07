@@ -1,0 +1,2 @@
+'use client'; import {useEffect} from 'react';
+export default function Analytics(){useEffect(()=>{const id=process.env.NEXT_PUBLIC_ANALYTICS_ID;if(!id)return;const s=document.createElement('script');s.defer=true;s.src=`https://www.googletagmanager.com/gtag/js?id=${id}`;document.head.appendChild(s);(window as any).dataLayer=(window as any).dataLayer||[];function g(...args:any[]){(window as any).dataLayer.push(args)}g('js',new Date());g('config',id);return()=>s.remove()},[]);return null}

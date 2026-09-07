@@ -1,0 +1,2 @@
+import Link from 'next/link'; import {ArrowLeft} from 'lucide-react';
+export default function NotFound(){return <section className="form-shell" style={{textAlign:'center'}}><div className="eyebrow">404 / NOT FOUND</div><h1>That page doesn’t exist.</h1><p className="hero-copy" style={{margin:'20px auto'}}>The page may have moved, or the URL may be incorrect.</p><Link href="/" className="btn btn-primary"><ArrowLeft size={15}/> Back home</Link></section>}
