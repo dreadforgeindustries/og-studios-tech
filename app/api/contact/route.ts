@@ -1,0 +1,20 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { contactSchema } from '@/lib/validation';
+import { adminSupabase } from '@/lib/supabase';
+import { rateLimit } from '@/lib/rate-limit';
+import { notifyBusiness } from '@/lib/email';
+
+const esc = (v: string) => v.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]!));
+export async function POST(req: NextRequest) {
+  try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    const rl = await rateLimit(`contact:${ip}`, 5, 60_000); if (!rl.ok) return NextResponse.json({ error: 'Too many messages. Please try again in a minute.' }, { status: 429 });
+    const body = await req.json(); if (body.website) return NextResponse.json({ ok: true });
+    const parsed = contactSchema.safeParse(body); if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid form.' }, { status: 400 });
+    const db = adminSupabase();
+    const { error } = await db.from('contact_messages').insert({ name: parsed.data.name, email: parsed.data.email, phone: parsed.data.phone || null, message: parsed.data.message });
+    if (error) throw error;
+    await notifyBusiness(`New OG Studios.Tech contact from ${esc(parsed.data.name)}`, `<p><strong>${esc(parsed.data.name)}</strong> (${esc(parsed.data.email)}) sent a new message.</p><p>${esc(parsed.data.message).replace(/\n/g, '<br/>')}</p>`);
+    return NextResponse.json({ ok: true });
+  } catch (e) { console.error('contact POST failed', e); return NextResponse.json({ error: 'We could not send your message right now. Please try again.' }, { status: 500 }); }
+}

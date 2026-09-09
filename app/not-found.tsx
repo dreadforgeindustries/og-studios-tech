@@ -1,0 +1,2 @@
+import Link from 'next/link';
+export default function NotFound(){return <section className="section" style={{paddingTop:180}}><div className="container" style={{maxWidth:900}}><div className="eyebrow">404 / NOT FOUND</div><h1 style={{fontSize:'clamp(70px,12vw,150px)',lineHeight:.85,letterSpacing:'-.08em',margin:'20px 0'}}>That page<br/>doesn’t exist.</h1><p className="hero-copy">The link may be outdated or the project may no longer be public.</p><Link href="/" className="btn btn-primary" style={{marginTop:30}}>Back home</Link></div></section>}
